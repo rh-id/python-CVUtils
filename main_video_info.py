@@ -1,5 +1,5 @@
 import argparse
-import video_utils
+from scripts import video_utils
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
