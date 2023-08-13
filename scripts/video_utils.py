@@ -27,6 +27,5 @@ def decode_fourcc(fourcc):
     fourcc_decode = ""
     for i in range(4):
         int_value = fourcc_int >> 8 * i & 0xFF
-        print("int_value: '{}'".format(int_value))
         fourcc_decode += chr(int_value)
     return fourcc_decode
