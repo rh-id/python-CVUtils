@@ -1,4 +1,41 @@
+import pathlib
+
 import cv2
+import progressbar
+
+
+# Split all video at video_path to images (jpeg) at output_path
+def video2image(video_path, output_path, resize_width=None, resize_height=None):
+    capture = cv2.VideoCapture(video_path)
+
+    if capture.isOpened() is False:
+        print("Error opening the camera")
+        return
+
+    frame_count = capture.get(cv2.CAP_PROP_FRAME_COUNT)
+    i = 1
+    progress = progressbar.ProgressBar(max_value=frame_count)
+    print("CV_CAP_PROP_FRAME_WIDTH : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_WIDTH)))
+    print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    print("CV_CAP_PROP_FRAME_COUNT : '{}'".format(frame_count))
+    pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
+    while capture.isOpened():
+        file_path = pathlib.Path(output_path, str(i) + ".jpg")
+        ret, frame = capture.read()
+
+        if ret is True:
+            image = frame
+            if resize_width is not None and resize_height is not None:
+                image = cv2.resize(frame, (resize_width, resize_height))
+
+            cv2.imwrite(str(file_path), image)
+            progress.update(i)
+            i += 1
+        else:
+            break
+
+    capture.release()
+
 
 def print_video_info(video_path):
     capture = cv2.VideoCapture(video_path)
@@ -21,6 +58,7 @@ def print_video_info(video_path):
     print("CAP_PROP_ISO_SPEED : '{}'".format(capture.get(cv2.CAP_PROP_ISO_SPEED)))
     print("CAP_PROP_BUFFERSIZE : '{}'".format(capture.get(cv2.CAP_PROP_BUFFERSIZE)))
     capture.release()
+
 
 def decode_fourcc(fourcc):
     fourcc_int = int(fourcc)
