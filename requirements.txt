@@ -1,2 +1,4 @@
-opencv_contrib_python==4.8.0.74
-opencv_python==4.8.0.74
+pathlib>=1.0.1
+opencv-python>=4.8.0.76
+argparse>=1.4.0
+progressbar>=2.5
