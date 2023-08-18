@@ -1,6 +1,7 @@
 import argparse
 
 from scripts import video_utils
+from scripts.model.video_utils import Video2ImageAttr
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -10,4 +11,4 @@ if __name__ == '__main__':
     parser.add_argument("--resize-width", type=int, help="Resized width")
     parser.add_argument("--resize-height", type=int, help="Resized height")
     args = parser.parse_args()
-    video_utils.video2image(args.video_path, args.output_path, args.resize_width, args.resize_height)
+    video_utils.video2image(args.video_path, args.output_path, Video2ImageAttr(args))

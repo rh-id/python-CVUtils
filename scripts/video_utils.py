@@ -3,9 +3,11 @@ import pathlib
 import cv2
 import progressbar
 
+from scripts.model.video_utils import Video2ImageAttr
+
 
 # Split all video at video_path to images (jpeg) at output_path
-def video2image(video_path, output_path, resize_width=None, resize_height=None):
+def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Video2ImageAttr()):
     capture = cv2.VideoCapture(video_path)
 
     if capture.isOpened() is False:
@@ -14,19 +16,20 @@ def video2image(video_path, output_path, resize_width=None, resize_height=None):
 
     frame_count = capture.get(cv2.CAP_PROP_FRAME_COUNT)
     i = 1
-    progress = progressbar.ProgressBar(max_value=frame_count)
     print("CV_CAP_PROP_FRAME_WIDTH : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_WIDTH)))
     print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     print("CV_CAP_PROP_FRAME_COUNT : '{}'".format(frame_count))
+    video2image_attr.print_self()
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
+    progress = progressbar.ProgressBar(maxval=frame_count).start()
     while capture.isOpened():
         file_path = pathlib.Path(output_path, str(i) + ".jpg")
         ret, frame = capture.read()
 
         if ret is True:
             image = frame
-            if resize_width is not None and resize_height is not None:
-                image = cv2.resize(frame, (resize_width, resize_height))
+            if video2image_attr.resize_width is not None and video2image_attr.resize_height is not None:
+                image = cv2.resize(frame, (video2image_attr.resize_width, video2image_attr.resize_height))
 
             cv2.imwrite(str(file_path), image)
             progress.update(i)
