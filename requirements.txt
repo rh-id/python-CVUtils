@@ -2,3 +2,5 @@ pathlib>=1.0.1
 opencv-python>=4.8.0.76
 argparse>=1.4.0
 progressbar>=2.5
+numpy>=1.25.2
+matplotlib>=3.7.2
