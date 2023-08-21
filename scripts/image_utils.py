@@ -3,6 +3,200 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def analyze_image_skin_segment(image_path):
+    def show_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    lower_hsv = np.array([0, 48, 80], dtype="uint8")
+    upper_hsv = np.array([20, 255, 255], dtype="uint8")
+    lower_hsv_2 = np.array([0, 50, 0], dtype="uint8")
+    upper_hsv_2 = np.array([120, 150, 255], dtype="uint8")
+    lower_ycrcb = np.array([0, 133, 77], dtype="uint8")
+    upper_ycrcb = np.array([255, 173, 127], dtype="uint8")
+
+    def skin_detector_hsv(bgr_image):
+        hsv_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
+        skin_region = cv2.inRange(hsv_image, lower_hsv, upper_hsv)
+        return skin_region
+
+    def skin_detector_hsv_2(bgr_image):
+        hsv_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
+        skin_region = cv2.inRange(hsv_image, lower_hsv_2, upper_hsv_2)
+        return skin_region
+
+    def skin_detector_ycrcb(bgr_image):
+        ycrcb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2YCR_CB)
+        skin_region = cv2.inRange(ycrcb_image, lower_ycrcb, upper_ycrcb)
+        return skin_region
+
+    def bgr_skin(b, g, r):
+        """Rule for skin pixel segmentation based on the paper 'RGB-H-CbCr Skin Colour Model for Human Face Detection'"""
+
+        e1 = bool((r > 95) and (g > 40) and (b > 20) and ((max(r, max(g, b)) - min(r, min(g, b))) > 15) and (
+                abs(int(r) - int(g)) > 15) and (r > g) and (r > b))
+        e2 = bool((r > 220) and (g > 210) and (b > 170) and (abs(int(r) - int(g)) <= 15) and (r > b) and (g > b))
+        return e1 or e2
+
+    def skin_detector_bgr(bgr_image):
+        h = bgr_image.shape[0]
+        w = bgr_image.shape[1]
+        res = np.zeros((h, w, 1), dtype="uint8")
+        # Only 'skin pixels' will be set to white (255) in the res image:
+        for y in range(0, h):
+            for x in range(0, w):
+                (b, g, r) = bgr_image[y, x]
+                if bgr_skin(b, g, r):
+                    res[y, x] = 255
+
+        return res
+
+    skin_detectors = {
+        'ycrcb': skin_detector_ycrcb,
+        'hsv': skin_detector_hsv,
+        'hsv_2': skin_detector_hsv_2,
+        'bgr': skin_detector_bgr
+    }
+
+    plt.figure(figsize=(15, 8))
+    plt.suptitle("Skin segmentation using different color spaces", fontsize=14, fontweight='bold')
+
+    image = cv2.imread(image_path)
+    show_with_matplotlib(image, "Input Image", 1)
+    for i, (k, v) in enumerate(skin_detectors.items()):
+        detected_skin = v(image)
+        bgr = cv2.cvtColor(detected_skin, cv2.COLOR_GRAY2BGR)
+        show_with_matplotlib(bgr, k, i + 2)
+    plt.show()
+
+
+def analyze_image_morph(image_path):
+    def show_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(3, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def build_kernel(kernel_type, kernel_size):
+        if kernel_type == cv2.MORPH_ELLIPSE:
+            return cv2.getStructuringElement(cv2.MORPH_ELLIPSE, kernel_size)
+        elif kernel_type == cv2.MORPH_CROSS:
+            return cv2.getStructuringElement(cv2.MORPH_CROSS, kernel_size)
+        else:
+            return cv2.getStructuringElement(cv2.MORPH_RECT, kernel_size)
+
+    def erode(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        erosion = cv2.erode(image, kernel, iterations=1)
+        return erosion
+
+    def dilate(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        dilation = cv2.dilate(image, kernel, iterations=1)
+        return dilation
+
+    # Closing = dilation + erosion
+    def closing(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        clos = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+        return clos
+
+    # Opening = erosion + dilation
+    def opening(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        ope = cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+        return ope
+
+    def morphological_gradient(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        morph_gradient = cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
+        return morph_gradient
+
+    def closing_and_opening(image, kernel_type, kernel_size):
+        closing_img = closing(image, kernel_type, kernel_size)
+        opening_img = opening(closing_img, kernel_type, kernel_size)
+        return opening_img
+
+    def opening_and_closing(image, kernel_type, kernel_size):
+
+        opening_img = opening(image, kernel_type, kernel_size)
+        closing_img = closing(opening_img, kernel_type, kernel_size)
+        return closing_img
+
+    morphological_operations = {
+        'erode': erode,
+        'dilate': dilate,
+        'closing': closing,
+        'opening': opening,
+        'gradient': morphological_gradient,
+        'closing|opening': closing_and_opening,
+        'opening|closing': opening_and_closing
+    }
+    kernel_size_3_3 = (3, 3)
+    kernel_size_5_5 = (5, 5)
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_RECT', kernel_size='(3,3)'", fontsize=14,
+                 fontweight='bold')
+    image = cv2.imread(image_path)
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_RECT, kernel_size_3_3)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_RECT', kernel_size='(5,5)'", fontsize=14,
+                 fontweight='bold')
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_RECT, kernel_size_5_5)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_CROSS', kernel_size='(3,3)'", fontsize=14,
+                 fontweight='bold')
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_CROSS, kernel_size_3_3)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_CROSS', kernel_size='(5,5)'", fontsize=14,
+                 fontweight='bold')
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_CROSS, kernel_size_5_5)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_ELLIPSE', kernel_size='(3,3)'", fontsize=14,
+                 fontweight='bold')
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_ELLIPSE, kernel_size_3_3)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+    plt.figure(figsize=(16, 8))
+    plt.suptitle("Morpho operations - kernel_type='cv2.MORPH_ELLIPSE', kernel_size='(5,5)'", fontsize=14,
+                 fontweight='bold')
+    show_with_matplotlib(image, 'Input Image', 1)
+    for i, (k, v) in enumerate(morphological_operations.items()):
+        image_morph = v(image, cv2.MORPH_ELLIPSE, kernel_size_5_5)
+        show_with_matplotlib(image_morph, k, i + 2)
+    plt.show()
+
+
 def analyze_image_color_map(image_path):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
