@@ -3,6 +3,154 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def histogram_image_gray_mask(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 2, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_gray(hist, pos, color):
+        plt.subplot(2, 2, pos)
+        plt.xlabel("bins")
+        plt.xlim([0, 256])
+        plt.plot(hist, color=color)
+
+    plt.figure(figsize=(10, 6))
+    plt.suptitle("Grayscale masked histogram", fontsize=14, fontweight='bold')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calculate the histogram calling cv2.calcHist()
+    # The first argument it the list of images to process
+    # The second argument is the indexes of the channels to be used to calculate the histogram
+    # The third argument is a mask to compute the histogram for the masked pixels
+    # The fourth argument is a list containing the number of bins for each channel
+    # The fifth argument is the range of possible pixel values
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray", 1)
+    show_hist_with_matplotlib_gray(hist, 2, 'm')
+
+    # Create the mask and calculate the histogram using the mask:
+    mask = np.zeros(gray_image.shape[:2], np.uint8)
+    mask[30:190, 30:190] = 255
+    hist_mask = cv2.calcHist([gray_image], [0], mask, [256], [0, 256])
+
+    masked_img = cv2.bitwise_and(gray_image, gray_image, mask=mask)
+    show_img_with_matplotlib(cv2.cvtColor(masked_img, cv2.COLOR_GRAY2BGR), "masked gray image", 3)
+    show_hist_with_matplotlib_gray(hist_mask, 4, 'm')
+
+    plt.show()
+
+
+def histogram_image_gray_equalize(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(3, 4, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_gray(hist, pos, color):
+        plt.subplot(3, 4, pos)
+        plt.xlabel("bins")
+        plt.xlim([0, 256])
+        plt.plot(hist, color=color)
+
+    plt.figure(figsize=(20, 16))
+    plt.suptitle("Grayscale histogram equalization with cv2.equalizeHist()", fontsize=16, fontweight='bold')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calculate the histogram calling cv2.calcHist()
+    # The first argument it the list of images to process
+    # The second argument is the indexes of the channels to be used to calculate the histogram
+    # The third argument is a mask to compute the histogram for the masked pixels
+    # The fourth argument is a list containing the number of bins for each channel
+    # The fifth argument is the range of possible pixel values
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    gray_image_eq = cv2.equalizeHist(gray_image)
+    hist_eq = cv2.calcHist([gray_image_eq], [0], None, [256], [0, 256])
+
+    # Add/Substract 35 to every pixel on the grayscale image and calculate histogram:
+    M = np.ones(gray_image.shape, dtype="uint8") * 35
+    added_image = cv2.add(gray_image, M)
+    hist_added_image = cv2.calcHist([added_image], [0], None, [256], [0, 256])
+
+    added_image_eq = cv2.equalizeHist(added_image)
+    hist_eq_added_image = cv2.calcHist([added_image_eq], [0], None, [256], [0, 256])
+
+    subtracted_image = cv2.subtract(gray_image, M)
+    hist_subtracted_image = cv2.calcHist([subtracted_image], [0], None, [256], [0, 256])
+
+    subtracted_image_eq = cv2.equalizeHist(subtracted_image)
+    hist_eq_subtracted_image = cv2.calcHist([subtracted_image_eq], [0], None, [256], [0, 256])
+
+    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray", 1)
+    show_hist_with_matplotlib_gray(hist, 2, 'm')
+    show_img_with_matplotlib(cv2.cvtColor(added_image, cv2.COLOR_GRAY2BGR), "gray lighter", 5)
+    show_hist_with_matplotlib_gray(hist_added_image, 6, 'm')
+    show_img_with_matplotlib(cv2.cvtColor(subtracted_image, cv2.COLOR_GRAY2BGR), "gray darker", 9)
+    show_hist_with_matplotlib_gray(hist_subtracted_image, 10, 'm')
+
+    show_img_with_matplotlib(cv2.cvtColor(gray_image_eq, cv2.COLOR_GRAY2BGR), "grayscale equalized", 3)
+    show_hist_with_matplotlib_gray(hist_eq, 4, 'm')
+    show_img_with_matplotlib(cv2.cvtColor(added_image_eq, cv2.COLOR_GRAY2BGR), "gray lighter equalized", 7)
+    show_hist_with_matplotlib_gray(hist_eq_added_image, 8, 'm')
+    show_img_with_matplotlib(cv2.cvtColor(subtracted_image_eq, cv2.COLOR_GRAY2BGR), "gray darker equalized", 11)
+    show_hist_with_matplotlib_gray(hist_eq_subtracted_image, 12, 'm')
+
+    plt.show()
+
+
+def histogram_image_gray(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_gray(hist, pos, color):
+        plt.subplot(2, 3, pos)
+        plt.xlabel("bins")
+        plt.xlim([0, 256])
+        plt.plot(hist, color=color)
+
+    plt.figure(figsize=(18, 8))
+    plt.suptitle("Grayscale histograms", fontsize=14, fontweight='bold')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray", 1)
+    show_hist_with_matplotlib_gray(hist, 4, 'm')
+
+    M = np.ones(gray_image.shape, dtype="uint8") * 35
+    added_image = cv2.add(gray_image, M)
+    hist_added_image = cv2.calcHist([added_image], [0], None, [256], [0, 256])
+
+    subtracted_image = cv2.subtract(gray_image, M)
+    hist_subtracted_image = cv2.calcHist([subtracted_image], [0], None, [256], [0, 256])
+
+    show_img_with_matplotlib(cv2.cvtColor(added_image, cv2.COLOR_GRAY2BGR), "gray lighter", 2)
+    show_hist_with_matplotlib_gray(hist_added_image, 5, 'm')
+    show_img_with_matplotlib(cv2.cvtColor(subtracted_image, cv2.COLOR_GRAY2BGR), "gray darker", 3)
+    show_hist_with_matplotlib_gray(hist_subtracted_image, 6, 'm')
+
+    plt.show()
+
+
 def analyze_image_kernel(image_path):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]

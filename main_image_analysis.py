@@ -2,7 +2,6 @@ import argparse
 
 from scripts import image_utils
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("image_path", help="Path to the image file")

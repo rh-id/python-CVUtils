@@ -3,7 +3,6 @@ import argparse
 from scripts import video_utils
 from scripts.model.video_utils import Video2ImageAttr
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("video_path", help="Path to the video file")
