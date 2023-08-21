@@ -173,7 +173,7 @@ def analyze_image_morph(image_path):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
-        plt.subplot(3, 3, pos)
+        plt.subplot(3, 4, pos)
         plt.imshow(img_RGB)
         plt.title(title)
         plt.axis('off')
@@ -213,6 +213,16 @@ def analyze_image_morph(image_path):
         morph_gradient = cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
         return morph_gradient
 
+    def top_hat(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        morph = cv2.morphologyEx(image, cv2.MORPH_TOPHAT, kernel)
+        return morph
+
+    def black_hat(image, kernel_type, kernel_size):
+        kernel = build_kernel(kernel_type, kernel_size)
+        morph = cv2.morphologyEx(image, cv2.MORPH_BLACKHAT, kernel)
+        return morph
+
     def closing_and_opening(image, kernel_type, kernel_size):
         closing_img = closing(image, kernel_type, kernel_size)
         opening_img = opening(closing_img, kernel_type, kernel_size)
@@ -227,9 +237,11 @@ def analyze_image_morph(image_path):
     morphological_operations = {
         'erode': erode,
         'dilate': dilate,
+        'gradient': morphological_gradient,
         'closing': closing,
         'opening': opening,
-        'gradient': morphological_gradient,
+        'tophat': top_hat,
+        'blackhat': black_hat,
         'closing|opening': closing_and_opening,
         'opening|closing': opening_and_closing
     }
