@@ -3,6 +3,207 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def histogram_image_color_equalize_hsv(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(3, 4, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_rgb(hist, pos, color):
+        plt.subplot(3, 4, pos)
+        plt.xlabel("bins")
+        plt.ylabel("number of pixels")
+        plt.xlim([0, 256])
+
+        for (h, c) in zip(hist, color):
+            plt.plot(h, color=c)
+
+    def hist_color_img(img):
+        histr = []
+        histr.append(cv2.calcHist([img], [0], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [1], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [2], None, [256], [0, 256]))
+        return histr
+
+    def equalize_hist_color_hsv(img):
+        H, S, V = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2HSV))
+        eq_V = cv2.equalizeHist(V)
+        eq_image = cv2.cvtColor(cv2.merge([H, S, eq_V]), cv2.COLOR_HSV2BGR)
+        return eq_image
+
+    plt.figure(figsize=(18, 14))
+    plt.suptitle("Color histogram equalization with cv2.equalizeHist() in the V channel", fontsize=14,
+                 fontweight='bold')
+
+    image = cv2.imread(image_path)
+
+    hist_color = hist_color_img(image)
+
+    image_eq = equalize_hist_color_hsv(image)
+    hist_image_eq = hist_color_img(image_eq)
+
+    # Add/Subtract 15 to every pixel on the image and calculate histogram
+    M = np.ones(image.shape, dtype="uint8") * 15
+    added_image = cv2.add(image, M)
+    hist_color_added_image = hist_color_img(added_image)
+
+    added_image_eq = equalize_hist_color_hsv(added_image)
+    hist_added_image_eq = hist_color_img(added_image_eq)
+
+    subtracted_image = cv2.subtract(image, M)
+    hist_color_subtracted_image = hist_color_img(subtracted_image)
+
+    subtracted_image_eq = equalize_hist_color_hsv(subtracted_image)
+    hist_subtracted_image_eq = hist_color_img(subtracted_image_eq)
+
+    show_img_with_matplotlib(image, "image", 1)
+    show_hist_with_matplotlib_rgb(hist_color, 2, ['b', 'g', 'r'])
+    show_img_with_matplotlib(added_image, "image lighter", 5)
+    show_hist_with_matplotlib_rgb(hist_color_added_image, 6, ['b', 'g', 'r'])
+    show_img_with_matplotlib(subtracted_image, "image darker", 9)
+    show_hist_with_matplotlib_rgb(hist_color_subtracted_image, 10, ['b', 'g', 'r'])
+
+    show_img_with_matplotlib(image_eq, "image equalized", 3)
+    show_hist_with_matplotlib_rgb(hist_image_eq, 4, ['b', 'g', 'r'])
+    show_img_with_matplotlib(added_image_eq, "image lighter equalized", 7)
+    show_hist_with_matplotlib_rgb(hist_added_image_eq, 8, ['b', 'g', 'r'])
+    show_img_with_matplotlib(subtracted_image_eq, "image darker equalized", 11)
+    show_hist_with_matplotlib_rgb(hist_subtracted_image_eq, 12, ['b', 'g', 'r'])
+
+    plt.show()
+
+
+def histogram_image_color_equalize(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(3, 4, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_rgb(hist, pos, color):
+        plt.subplot(3, 4, pos)
+        plt.xlabel("bins")
+        plt.ylabel("number of pixels")
+        plt.xlim([0, 256])
+
+        for (h, c) in zip(hist, color):
+            plt.plot(h, color=c)
+
+    def hist_color_img(img):
+        histr = []
+        histr.append(cv2.calcHist([img], [0], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [1], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [2], None, [256], [0, 256]))
+        return histr
+
+    def equalize_hist_color(img):
+        channels = cv2.split(img)
+        eq_channels = []
+        for ch in channels:
+            eq_channels.append(cv2.equalizeHist(ch))
+
+        eq_image = cv2.merge(eq_channels)
+        return eq_image
+
+    plt.figure(figsize=(18, 14))
+    plt.suptitle("Color histogram equalization with cv2.equalizeHist() - not a good approach", fontsize=14,
+                 fontweight='bold')
+
+    image = cv2.imread(image_path)
+
+    hist_color = hist_color_img(image)
+
+    image_eq = equalize_hist_color(image)
+    hist_image_eq = hist_color_img(image_eq)
+
+    # Add/Subtract 15 to every pixel on the image and calculate histogram
+    M = np.ones(image.shape, dtype="uint8") * 15
+    added_image = cv2.add(image, M)
+    hist_color_added_image = hist_color_img(added_image)
+
+    added_image_eq = equalize_hist_color(added_image)
+    hist_added_image_eq = hist_color_img(added_image_eq)
+
+    subtracted_image = cv2.subtract(image, M)
+    hist_color_subtracted_image = hist_color_img(subtracted_image)
+
+    subtracted_image_eq = equalize_hist_color(subtracted_image)
+    hist_subtracted_image_eq = hist_color_img(subtracted_image_eq)
+
+    show_img_with_matplotlib(image, "image", 1)
+    show_hist_with_matplotlib_rgb(hist_color, 2, ['b', 'g', 'r'])
+    show_img_with_matplotlib(added_image, "image lighter", 5)
+    show_hist_with_matplotlib_rgb(hist_color_added_image, 6, ['b', 'g', 'r'])
+    show_img_with_matplotlib(subtracted_image, "image darker", 9)
+    show_hist_with_matplotlib_rgb(hist_color_subtracted_image, 10, ['b', 'g', 'r'])
+
+    show_img_with_matplotlib(image_eq, "image equalized", 3)
+    show_hist_with_matplotlib_rgb(hist_image_eq, 4, ['b', 'g', 'r'])
+    show_img_with_matplotlib(added_image_eq, "image lighter equalized", 7)
+    show_hist_with_matplotlib_rgb(hist_added_image_eq, 8, ['b', 'g', 'r'])
+    show_img_with_matplotlib(subtracted_image_eq, "image darker equalized", 11)
+    show_hist_with_matplotlib_rgb(hist_subtracted_image_eq, 12, ['b', 'g', 'r'])
+
+    plt.show()
+
+
+def histogram_image_color(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_rgb(hist, pos, color):
+        plt.subplot(2, 3, pos)
+        plt.xlabel("bins")
+        plt.ylabel("number of pixels")
+        plt.xlim([0, 256])
+
+        for (h, c) in zip(hist, color):
+            plt.plot(h, color=c)
+
+    def hist_color_img(img):
+        histr = []
+        histr.append(cv2.calcHist([img], [0], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [1], None, [256], [0, 256]))
+        histr.append(cv2.calcHist([img], [2], None, [256], [0, 256]))
+        return histr
+
+    plt.figure(figsize=(15, 6))
+    plt.suptitle("Color histograms", fontsize=14, fontweight='bold')
+
+    image = cv2.imread(image_path)
+
+    hist_color = hist_color_img(image)
+
+    show_img_with_matplotlib(image, "image", 1)
+
+    show_hist_with_matplotlib_rgb(hist_color, 4, ['b', 'g', 'r'])
+
+    # Add/Subtract 15 to every pixel on the image and calculate histogram:
+    M = np.ones(image.shape, dtype="uint8") * 15
+    added_image = cv2.add(image, M)
+    hist_color_added_image = hist_color_img(added_image)
+
+    subtracted_image = cv2.subtract(image, M)
+    hist_color_subtracted_image = hist_color_img(subtracted_image)
+
+    show_img_with_matplotlib(added_image, "image lighter", 2)
+    show_hist_with_matplotlib_rgb(hist_color_added_image, 5, ['b', 'g', 'r'])
+    show_img_with_matplotlib(subtracted_image, "image darker", 3)
+    show_hist_with_matplotlib_rgb(hist_color_subtracted_image, 6, ['b', 'g', 'r'])
+
+    plt.show()
+
+
 def histogram_image_gray_mask(image_path):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
