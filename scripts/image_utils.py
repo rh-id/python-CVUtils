@@ -3,6 +3,50 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def threshold_image_triangle_filter_noise(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    def show_hist_with_matplotlib_gray(hist, title, pos, color, otsu=-1):
+        plt.subplot(2, 3, pos)
+        plt.title(title)
+        plt.xlabel("bins")
+        plt.ylabel("number of pixels")
+        plt.xlim([0, 256])
+        plt.axvline(x=otsu, color='m', linestyle='--')
+        plt.plot(hist, color=color)
+
+    fig = plt.figure(figsize=(11, 10))
+    plt.suptitle("Triangle Binarization with Gaussian filter", fontsize=14, fontweight='bold')
+    fig.patch.set_facecolor('silver')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+    ret1, th1 = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_TRIANGLE)
+
+    gray_image_blurred = cv2.GaussianBlur(gray_image, (25, 25), 0)
+    hist2 = cv2.calcHist([gray_image_blurred], [0], None, [256], [0, 256])
+    ret2, th2 = cv2.threshold(gray_image_blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_TRIANGLE)
+
+    show_img_with_matplotlib(image, "image", 1)
+    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_hist_with_matplotlib_gray(hist, "gray img", 3, 'm', ret1)
+    show_img_with_matplotlib(cv2.cvtColor(th1, cv2.COLOR_GRAY2BGR),
+                             "Triangle binarization (before Gaussian filter)", 4)
+    show_hist_with_matplotlib_gray(hist2, "gray img (after Gaussian filter)", 5, 'm', ret2)
+    show_img_with_matplotlib(cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR),
+                             "Triangle binarization (after Gaussian filter)", 6)
+
+    plt.show()
+
+
 def threshold_image_otsu_filter_noise(image_path):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
