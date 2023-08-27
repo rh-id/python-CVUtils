@@ -4,3 +4,4 @@ argparse>=1.4.0
 progressbar>=2.5
 numpy>=1.25.2
 matplotlib>=3.7.2
+scikit-image>=0.21.0

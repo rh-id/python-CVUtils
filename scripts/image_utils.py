@@ -1,6 +1,67 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from skimage import img_as_ubyte
+from skimage.filters import (threshold_multiotsu, threshold_niblack, threshold_otsu, threshold_sauvola,
+                             threshold_triangle, threshold_yen)
+
+
+def threshold_image_scikit_image(image_path):
+    def show_img_with_matplotlib(color_img, title, pos, cmap=None, to_rgb=True):
+        if to_rgb:
+            img_RGB = color_img[:, :, ::-1]
+        else:
+            img_RGB = color_img
+
+        plt.subplot(3, 3, pos)
+        plt.imshow(img_RGB, cmap=cmap)
+        plt.title(title)
+        plt.axis('off')
+
+    fig = plt.figure(figsize=(12, 8))
+    plt.suptitle("Thresholding scikit-image", fontsize=14, fontweight='bold')
+    fig.patch.set_facecolor('silver')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    thresh_multiotsu = threshold_multiotsu(gray_image)
+    multi_otsu = np.digitize(gray_image, bins=thresh_multiotsu)
+
+    thresh_otsu = threshold_otsu(gray_image)
+    binary_otsu = gray_image > thresh_otsu
+    binary_otsu = img_as_ubyte(binary_otsu)
+
+    thresh_niblack = threshold_niblack(gray_image, window_size=25, k=0.8)
+    binary_niblack = gray_image > thresh_niblack
+    binary_niblack = img_as_ubyte(binary_niblack)
+
+    thresh_sauvola = threshold_sauvola(gray_image, window_size=25)
+    binary_sauvola = gray_image > thresh_sauvola
+    binary_sauvola = img_as_ubyte(binary_sauvola)
+
+    thresh_triangle = threshold_triangle(gray_image)
+    binary_triangle = gray_image > thresh_triangle
+    binary_triangle = img_as_ubyte(binary_triangle)
+
+    thresh_yen = threshold_yen(gray_image)
+    binary_yen = gray_image > thresh_yen
+    binary_yen = img_as_ubyte(binary_yen)
+
+    show_img_with_matplotlib(image, "image", 1)
+    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_img_with_matplotlib(multi_otsu, "Multiotsu", 3, cmap='jet', to_rgb=False)
+    show_img_with_matplotlib(cv2.cvtColor(binary_otsu, cv2.COLOR_GRAY2BGR), "Otsu", 4)
+    show_img_with_matplotlib(cv2.cvtColor(binary_triangle, cv2.COLOR_GRAY2BGR), "Triangle",
+                             5)
+    show_img_with_matplotlib(cv2.cvtColor(binary_niblack, cv2.COLOR_GRAY2BGR), "Niblack",
+                             6)
+    show_img_with_matplotlib(cv2.cvtColor(binary_sauvola, cv2.COLOR_GRAY2BGR), "Sauvola",
+                             7)
+    show_img_with_matplotlib(cv2.cvtColor(binary_yen, cv2.COLOR_GRAY2BGR), "Yen",
+                             8)
+
+    plt.show()
 
 
 def threshold_image_triangle_filter_noise(image_path):
