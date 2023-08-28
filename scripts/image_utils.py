@@ -6,6 +6,111 @@ from skimage.filters import (threshold_multiotsu, threshold_niblack, threshold_o
                              threshold_triangle, threshold_yen)
 
 
+def contours_hu_moments(image_path):
+    def centroid(moments):
+        x_centroid = round(moments['m10'] / moments['m00'])
+        y_centroid = round(moments['m01'] / moments['m00'])
+        return x_centroid, y_centroid
+
+    def draw_contour_outline(img, cnts, color, thickness=1):
+        for cnt in cnts:
+            cv2.drawContours(img, [cnt], 0, color, thickness)
+
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(1, 1, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    fig = plt.figure(figsize=(12, 5))
+    plt.suptitle("Hu moments", fontsize=14, fontweight='bold')
+    fig.patch.set_facecolor('silver')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    ret, thresh = cv2.threshold(gray_image, 70, 255, cv2.THRESH_BINARY)
+
+    M = cv2.moments(thresh, True)
+    print("moments: '{}'".format(M))
+
+    x, y = centroid(M)
+
+    HuM = cv2.HuMoments(M)
+    print("Hu moments: '{}'".format(HuM))
+
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+    M2 = cv2.moments(contours[0])
+    print("moments: '{}'".format(M2))
+
+    x2, y2 = centroid(M2)
+
+    HuM2 = cv2.HuMoments(M2)
+    print("Hu moments: '{}'".format(HuM2))
+
+    draw_contour_outline(image, contours, (255, 0, 0), 10)
+
+    cv2.circle(image, (x, y), 25, (255, 0, 0), -1)
+    cv2.circle(image, (x2, y2), 25, (0, 255, 0), -1)
+    print("('x','y'): ('{}','{}')".format(x, y))
+    print("('x2','y2'): ('{}','{}')".format(x2, y2))
+
+    show_img_with_matplotlib(image, "detected contour and centroid", 1)
+
+    # Show the Figure:
+    plt.show()
+
+
+def contours_approximation(image_path):
+    def show_img_with_matplotlib(color_img, title, pos):
+        img_RGB = color_img[:, :, ::-1]
+
+        plt.subplot(2, 3, pos)
+        plt.imshow(img_RGB)
+        plt.title(title)
+        plt.axis('off')
+
+    fig = plt.figure(figsize=(12, 8))
+    plt.suptitle("Contours approximation method", fontsize=14, fontweight='bold')
+    fig.patch.set_facecolor('silver')
+
+    image = cv2.imread(image_path)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    ret, thresh = cv2.threshold(gray_image, 70, 255, cv2.THRESH_BINARY)
+
+    image_approx_none = image.copy()
+    image_approx_simple = image.copy()
+    image_approx_tc89_l1 = image.copy()
+    image_approx_tc89_kcos = image.copy()
+
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    contours2, hierarchy2 = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    contours3, hierarchy3 = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_TC89_L1)
+    contours4, hierarchy4 = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_TC89_KCOS)
+
+    cv2.drawContours(image=image_approx_none, contours=contours, contourIdx=-1,
+                     color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+    cv2.drawContours(image=image_approx_simple, contours=contours2, contourIdx=-1,
+                     color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+    cv2.drawContours(image=image_approx_tc89_l1, contours=contours3, contourIdx=-1,
+                     color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+    cv2.drawContours(image=image_approx_tc89_kcos, contours=contours4, contourIdx=-1,
+                     color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+
+    show_img_with_matplotlib(image, "image", 1)
+    show_img_with_matplotlib(cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR), "threshold = 100", 2)
+    show_img_with_matplotlib(image_approx_none, "contours (APPROX_NONE)", 3)
+    show_img_with_matplotlib(image_approx_simple, "contours (CHAIN_APPROX_SIMPLE)", 4)
+    show_img_with_matplotlib(image_approx_tc89_l1, "contours (APPROX_TC89_L1)", 5)
+    show_img_with_matplotlib(image_approx_tc89_kcos, "contours (APPROX_TC89_KCOS)", 6)
+
+    plt.show()
+
+
 def threshold_image_scikit_image(image_path):
     def show_img_with_matplotlib(color_img, title, pos, cmap=None, to_rgb=True):
         if to_rgb:
