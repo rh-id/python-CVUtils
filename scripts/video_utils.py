@@ -34,6 +34,9 @@ def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Vid
             if video2image_attr.start_frame > video2image_attr.end_frame:
                 raise Exception("Start frame must not be more than End frame")
     # -----Validate END
+    filter_pre_resize = video2image_attr.filter_pre_resize
+    filter_post_resize = video2image_attr.filter_post_resize
+
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
     progress_max_val = frame_count
     start_frame = 0
@@ -55,8 +58,12 @@ def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Vid
 
         if ret is True:
             image = frame
+            if filter_pre_resize is not None:
+                image = filter_pre_resize(file_path, image)
             if video2image_attr.resize_width is not None and video2image_attr.resize_height is not None:
                 image = cv2.resize(frame, (video2image_attr.resize_width, video2image_attr.resize_height))
+            if filter_post_resize is not None:
+                image = filter_post_resize(file_path, image)
 
             cv2.imwrite(str(file_path), image)
             progress.update(i)

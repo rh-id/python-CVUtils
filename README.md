@@ -23,7 +23,12 @@ Used to show input image histogram on gray color
 Used to show input image threshold
 
 ### main_video2image.py
-Used to split video to images
+Used to split video to images.
+
+Use `--filter-path` to point to your custom filter for each frame.
+Example run python with: `main_video2image.py assets/video/test.avi output/video2image --filter-path main_video2image/filter/colormap_autumn.py`
+
+See example on how to write [**filter function**](https://github.com/rh-id/python-CVUtils/blob/master/main_video2image/filter/colormap_autumn.py)
 
 ### main_video_info.py
 Used to show video attributes/information
