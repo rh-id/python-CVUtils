@@ -15,15 +15,42 @@ def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Vid
         return
 
     frame_count = capture.get(cv2.CAP_PROP_FRAME_COUNT)
-    i = 1
     print("CV_CAP_PROP_FRAME_WIDTH : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_WIDTH)))
     print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     print("CV_CAP_PROP_FRAME_COUNT : '{}'".format(frame_count))
     video2image_attr.print_self()
+    # -----Validate START
+    if video2image_attr.start_frame is not None:
+        if video2image_attr.start_frame > frame_count:
+            raise Exception("Start frame, must not be more than video total frame " + str(frame_count))
+        elif video2image_attr.start_frame < 1:
+            raise Exception("Start frame must be at least 1")
+    if video2image_attr.end_frame is not None:
+        if video2image_attr.end_frame > frame_count:
+            raise Exception("End frame, must not be more than video total frame " + str(frame_count))
+        elif video2image_attr.end_frame < 1:
+            raise Exception("End frame must be at least 1")
+        elif video2image_attr.start_frame is not None:
+            if video2image_attr.start_frame > video2image_attr.end_frame:
+                raise Exception("Start frame must not be more than End frame")
+    # -----Validate END
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
-    progress = progressbar.ProgressBar(maxval=frame_count).start()
+    progress_max_val = frame_count
+    start_frame = 0
+    if video2image_attr.start_frame is not None and video2image_attr.end_frame is not None:
+        start_frame = video2image_attr.start_frame - 1
+        progress_max_val = video2image_attr.end_frame - start_frame
+    elif video2image_attr.start_frame is not None and video2image_attr.end_frame is None:
+        start_frame = video2image_attr.start_frame - 1
+        progress_max_val = frame_count - start_frame
+    elif video2image_attr.start_frame is None and video2image_attr.end_frame is not None:
+        progress_max_val = video2image_attr.end_frame
+
+    i = 1
+    progress = progressbar.ProgressBar(maxval=progress_max_val).start()
+    capture.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
     while capture.isOpened():
-        file_path = pathlib.Path(output_path, str(i) + ".jpg")
+        file_path = pathlib.Path(output_path, str(start_frame + 1) + ".jpg")
         ret, frame = capture.read()
 
         if ret is True:
@@ -34,6 +61,9 @@ def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Vid
             cv2.imwrite(str(file_path), image)
             progress.update(i)
             i += 1
+            start_frame += 1
+            if i > progress_max_val:
+                break
         else:
             break
 
