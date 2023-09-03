@@ -77,27 +77,36 @@ def video2image(video_path, output_path, video2image_attr: Video2ImageAttr = Vid
     capture.release()
 
 
-def print_video_info(video_path):
+def get_video_info(video_path):
     capture = cv2.VideoCapture(video_path)
-    print("CV_CAP_PROP_FRAME_WIDTH : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_WIDTH)))
-    print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    print("CAP_PROP_FPS : '{}'".format(capture.get(cv2.CAP_PROP_FPS)))
-    print("CAP_PROP_POS_MSEC : '{}'".format(capture.get(cv2.CAP_PROP_POS_MSEC)))
-    print("CAP_PROP_POS_FRAMES : '{}'".format(capture.get(cv2.CAP_PROP_POS_FRAMES)))
-    print("CAP_PROP_FOURCC  : '{}'".format(decode_fourcc(capture.get(cv2.CAP_PROP_FOURCC))))
-    print("CAP_PROP_FRAME_COUNT  : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_COUNT)))
-    print("CAP_PROP_MODE : '{}'".format(capture.get(cv2.CAP_PROP_MODE)))
-    print("CAP_PROP_BRIGHTNESS : '{}'".format(capture.get(cv2.CAP_PROP_BRIGHTNESS)))
-    print("CAP_PROP_CONTRAST : '{}'".format(capture.get(cv2.CAP_PROP_CONTRAST)))
-    print("CAP_PROP_SATURATION : '{}'".format(capture.get(cv2.CAP_PROP_SATURATION)))
-    print("CAP_PROP_HUE : '{}'".format(capture.get(cv2.CAP_PROP_HUE)))
-    print("CAP_PROP_GAIN  : '{}'".format(capture.get(cv2.CAP_PROP_GAIN)))
-    print("CAP_PROP_EXPOSURE : '{}'".format(capture.get(cv2.CAP_PROP_EXPOSURE)))
-    print("CAP_PROP_CONVERT_RGB : '{}'".format(capture.get(cv2.CAP_PROP_CONVERT_RGB)))
-    print("CAP_PROP_RECTIFICATION : '{}'".format(capture.get(cv2.CAP_PROP_RECTIFICATION)))
-    print("CAP_PROP_ISO_SPEED : '{}'".format(capture.get(cv2.CAP_PROP_ISO_SPEED)))
-    print("CAP_PROP_BUFFERSIZE : '{}'".format(capture.get(cv2.CAP_PROP_BUFFERSIZE)))
+    info = [
+        "CV_CAP_PROP_FRAME_WIDTH : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
+        "CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+        "CAP_PROP_FPS : '{}'".format(capture.get(cv2.CAP_PROP_FPS)),
+        "CAP_PROP_POS_MSEC : '{}'".format(capture.get(cv2.CAP_PROP_POS_MSEC)),
+        "CAP_PROP_POS_FRAMES : '{}'".format(capture.get(cv2.CAP_PROP_POS_FRAMES)),
+        "CAP_PROP_FOURCC  : '{}'".format(decode_fourcc(capture.get(cv2.CAP_PROP_FOURCC))),
+        "CAP_PROP_FRAME_COUNT  : '{}'".format(capture.get(cv2.CAP_PROP_FRAME_COUNT)),
+        "CAP_PROP_MODE : '{}'".format(capture.get(cv2.CAP_PROP_MODE)),
+        "CAP_PROP_BRIGHTNESS : '{}'".format(capture.get(cv2.CAP_PROP_BRIGHTNESS)),
+        "CAP_PROP_CONTRAST : '{}'".format(capture.get(cv2.CAP_PROP_CONTRAST)),
+        "CAP_PROP_SATURATION : '{}'".format(capture.get(cv2.CAP_PROP_SATURATION)),
+        "CAP_PROP_HUE : '{}'".format(capture.get(cv2.CAP_PROP_HUE)),
+        "CAP_PROP_GAIN  : '{}'".format(capture.get(cv2.CAP_PROP_GAIN)),
+        "CAP_PROP_EXPOSURE : '{}'".format(capture.get(cv2.CAP_PROP_EXPOSURE)),
+        "CAP_PROP_CONVERT_RGB : '{}'".format(capture.get(cv2.CAP_PROP_CONVERT_RGB)),
+        "CAP_PROP_RECTIFICATION : '{}'".format(capture.get(cv2.CAP_PROP_RECTIFICATION)),
+        "CAP_PROP_ISO_SPEED : '{}'".format(capture.get(cv2.CAP_PROP_ISO_SPEED)),
+        "CAP_PROP_BUFFERSIZE : '{}'".format(capture.get(cv2.CAP_PROP_BUFFERSIZE)),
+    ]
     capture.release()
+    return info
+
+
+def print_video_info(video_path):
+    info = get_video_info(video_path)
+    for i in info:
+        print(i)
 
 
 def decode_fourcc(fourcc):

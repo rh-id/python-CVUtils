@@ -33,5 +33,8 @@ See example on how to write [**filter function**](https://github.com/rh-id/pytho
 ### main_video_info.py
 Used to show video attributes/information
 
+### main_video_info_scan.py
+Used to scan directory and export video attributes/information
+
 ## Attributions
 Special thanks to [Mastering OpenCV 4](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python) ([MIT License](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python/blob/master/LICENSE))
