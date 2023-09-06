@@ -22,6 +22,12 @@ Used to show input image histogram on gray color
 ### main_image_threshold.py
 Used to show input image threshold
 
+### main_pascalvoc_mediapipe_rename.py
+Used to rename image in Pascal VOC dataset.
+PASCAL VOC based on mediapipe dataset structure where dataset directory consist of `images` and `Annotations` see:
+https://developers.google.com/mediapipe/api/solutions/python/mediapipe_model_maker/object_detector/Dataset
+ 
+
 ### main_video2image.py
 Used to split video to images.
 
