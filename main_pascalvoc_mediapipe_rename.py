@@ -2,9 +2,6 @@ import argparse
 
 from scripts import pascalvoc_utils
 
-# PASCAL VOC based on mediapipe dataset structure
-# where dataset path consist of "images" and "Annotations"
-# https://developers.google.com/mediapipe/api/solutions/python/mediapipe_model_maker/object_detector/Dataset
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("dataset_path", help="Path to the dataset (directory)")
