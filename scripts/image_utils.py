@@ -1,3 +1,6 @@
+import os
+import pathlib
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -853,7 +856,7 @@ def histogram_image_gray(image_path):
     plt.show()
 
 
-def analyze_image_kernel(image_path):
+def analyze_image_kernel(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -947,8 +950,24 @@ def analyze_image_kernel(image_path):
     # Show the Figure:
     plt.show()
 
+    # Export if applicable
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def analyze_image_skin_segment(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'edge_detection_1.jpg'), edge_image_1)
+        cv2.imwrite(os.path.join(export_dir, 'edge_detection_2.jpg'), edge_image_2)
+        cv2.imwrite(os.path.join(export_dir, 'edge_detection_3.jpg'), edge_image_3)
+        cv2.imwrite(os.path.join(export_dir, 'sharpen_image.jpg'), sharpen_image)
+        cv2.imwrite(os.path.join(export_dir, 'unsharp_masking.jpg'), unsharp_masking_image)
+        cv2.imwrite(os.path.join(export_dir, 'blur_image.jpg'), blur_image)
+        cv2.imwrite(os.path.join(export_dir, 'gaussian_blur_image.jpg'), gaussian_blur_image)
+        cv2.imwrite(os.path.join(export_dir, 'emboss_image.jpg'), emboss_image)
+        cv2.imwrite(os.path.join(export_dir, 'sobel_x_image.jpg'), sobel_x_image)
+        cv2.imwrite(os.path.join(export_dir, 'sobel_y_image.jpg'), sobel_y_image)
+        cv2.imwrite(os.path.join(export_dir, 'outline_image.jpg'), outline_image)
+
+
+def analyze_image_skin_segment(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1016,10 +1035,16 @@ def analyze_image_skin_segment(image_path):
         detected_skin = v(image)
         bgr = cv2.cvtColor(detected_skin, cv2.COLOR_GRAY2BGR)
         show_with_matplotlib(bgr, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+
+            cv2.imwrite(os.path.join(export_dir, k + '.jpg'), bgr)
     plt.show()
 
 
-def analyze_image_morph(image_path):
+def analyze_image_morph(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1106,6 +1131,12 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_RECT, kernel_size_3_3)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'rect_3x3_' + k + '.jpg'), image_morph)
+
     plt.show()
 
     plt.figure(figsize=(16, 8))
@@ -1115,6 +1146,12 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_RECT, kernel_size_5_5)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'rect_5x5_' + k + '.jpg'), image_morph)
+
     plt.show()
 
     plt.figure(figsize=(16, 8))
@@ -1124,6 +1161,12 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_CROSS, kernel_size_3_3)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'cross_3x3_' + k + '.jpg'), image_morph)
+
     plt.show()
 
     plt.figure(figsize=(16, 8))
@@ -1133,6 +1176,12 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_CROSS, kernel_size_5_5)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'cross_5x5_' + k + '.jpg'), image_morph)
+
     plt.show()
 
     plt.figure(figsize=(16, 8))
@@ -1142,6 +1191,12 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_ELLIPSE, kernel_size_3_3)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'ellipse_3x3_' + k + '.jpg'), image_morph)
+
     plt.show()
 
     plt.figure(figsize=(16, 8))
@@ -1151,10 +1206,15 @@ def analyze_image_morph(image_path):
     for i, (k, v) in enumerate(morphological_operations.items()):
         image_morph = v(image, cv2.MORPH_ELLIPSE, kernel_size_5_5)
         show_with_matplotlib(image_morph, k, i + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, 'ellipse_5x5_' + k + '.jpg'), image_morph)
     plt.show()
 
 
-def analyze_image_color_map(image_path):
+def analyze_image_color_map(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1176,13 +1236,19 @@ def analyze_image_color_map(image_path):
     show_with_matplotlib(cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR), "GRAY", 1)
 
     for idx, val in enumerate(colormaps):
-        show_with_matplotlib(cv2.applyColorMap(gray_img, idx), val, idx + 2)
+        image = cv2.applyColorMap(gray_img, idx)
+        show_with_matplotlib(image, val, idx + 2)
+
+        # Export if applicable
+        if export_dir is not None:
+            pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(os.path.join(export_dir, val + '.jpg'), image)
 
     plt.show()
 
 
 # Analyze image with color map
-def analyze_image_color_space(image_path):
+def analyze_image_color_space(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1214,33 +1280,74 @@ def analyze_image_color_space(image_path):
 
     show_with_matplotlib(image, "BGR - image", 1)
 
-    show_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray image", 1 + 6)
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(gray_image, "gray image", 1 + 6)
 
-    show_with_matplotlib(cv2.cvtColor(bgr_b, cv2.COLOR_GRAY2BGR), "BGR - B comp", 2)
-    show_with_matplotlib(cv2.cvtColor(bgr_g, cv2.COLOR_GRAY2BGR), "BGR - G comp", 2 + 6)
-    show_with_matplotlib(cv2.cvtColor(bgr_r, cv2.COLOR_GRAY2BGR), "BGR - R comp", 2 + 6 * 2)
+    bgr_b = cv2.cvtColor(bgr_b, cv2.COLOR_GRAY2BGR)
+    bgr_g = cv2.cvtColor(bgr_g, cv2.COLOR_GRAY2BGR)
+    bgr_r = cv2.cvtColor(bgr_r, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(bgr_b, "BGR - B comp", 2)
+    show_with_matplotlib(bgr_g, "BGR - G comp", 2 + 6)
+    show_with_matplotlib(bgr_r, "BGR - R comp", 2 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(hsv_h, cv2.COLOR_GRAY2BGR), "HSV - H comp", 3)
-    show_with_matplotlib(cv2.cvtColor(hsv_s, cv2.COLOR_GRAY2BGR), "HSV - S comp", 3 + 6)
-    show_with_matplotlib(cv2.cvtColor(hsv_v, cv2.COLOR_GRAY2BGR), "HSV - V comp", 3 + 6 * 2)
+    hsv_h = cv2.cvtColor(hsv_h, cv2.COLOR_GRAY2BGR)
+    hsv_s = cv2.cvtColor(hsv_s, cv2.COLOR_GRAY2BGR)
+    hsv_v = cv2.cvtColor(hsv_v, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(hsv_h, "HSV - H comp", 3)
+    show_with_matplotlib(hsv_s, "HSV - S comp", 3 + 6)
+    show_with_matplotlib(hsv_v, "HSV - V comp", 3 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(hls_h, cv2.COLOR_GRAY2BGR), "HLS - H comp", 4)
-    show_with_matplotlib(cv2.cvtColor(hls_l, cv2.COLOR_GRAY2BGR), "HLS - L comp", 4 + 6)
-    show_with_matplotlib(cv2.cvtColor(hls_s, cv2.COLOR_GRAY2BGR), "HLS - S comp", 4 + 6 * 2)
+    hls_h = cv2.cvtColor(hls_h, cv2.COLOR_GRAY2BGR)
+    hls_l = cv2.cvtColor(hls_l, cv2.COLOR_GRAY2BGR)
+    hls_s = cv2.cvtColor(hls_s, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(hls_h, "HLS - H comp", 4)
+    show_with_matplotlib(hls_l, "HLS - L comp", 4 + 6)
+    show_with_matplotlib(hls_s, "HLS - S comp", 4 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(ycrcb_y, cv2.COLOR_GRAY2BGR), "YCrCb - Y comp", 5)
-    show_with_matplotlib(cv2.cvtColor(ycrcb_cr, cv2.COLOR_GRAY2BGR), "YCrCb - Cr comp", 5 + 6)
-    show_with_matplotlib(cv2.cvtColor(ycrcb_cb, cv2.COLOR_GRAY2BGR), "YCrCb - Cb comp", 5 + 6 * 2)
+    ycrcb_y = cv2.cvtColor(ycrcb_y, cv2.COLOR_GRAY2BGR)
+    ycrcb_cr = cv2.cvtColor(ycrcb_cr, cv2.COLOR_GRAY2BGR)
+    ycrcb_cb = cv2.cvtColor(ycrcb_cb, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(ycrcb_y, "YCrCb - Y comp", 5)
+    show_with_matplotlib(ycrcb_cr, "YCrCb - Cr comp", 5 + 6)
+    show_with_matplotlib(ycrcb_cb, "YCrCb - Cb comp", 5 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(lab_l, cv2.COLOR_GRAY2BGR), "L*a*b - L comp", 6)
-    show_with_matplotlib(cv2.cvtColor(lab_a, cv2.COLOR_GRAY2BGR), "L*a*b - a comp", 6 + 6)
-    show_with_matplotlib(cv2.cvtColor(lab_b, cv2.COLOR_GRAY2BGR), "L*a*b - b comp", 6 + 6 * 2)
+    lab_l = cv2.cvtColor(lab_l, cv2.COLOR_GRAY2BGR)
+    lab_a = cv2.cvtColor(lab_a, cv2.COLOR_GRAY2BGR)
+    lab_b = cv2.cvtColor(lab_b, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(lab_l, "L*a*b - L comp", 6)
+    show_with_matplotlib(lab_a, "L*a*b - a comp", 6 + 6)
+    show_with_matplotlib(lab_b, "L*a*b - b comp", 6 + 6 * 2)
+
+    # Export if applicable
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+        cv2.imwrite(os.path.join(export_dir, 'gray_image.jpg'), gray_image)
+
+        cv2.imwrite(os.path.join(export_dir, 'bgr_b.jpg'), bgr_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_g.jpg'), bgr_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_r.jpg'), bgr_r)
+
+        cv2.imwrite(os.path.join(export_dir, 'hsv_h.jpg'), hsv_h)
+        cv2.imwrite(os.path.join(export_dir, 'hsv_s.jpg'), hsv_s)
+        cv2.imwrite(os.path.join(export_dir, 'hsv_v.jpg'), hsv_v)
+
+        cv2.imwrite(os.path.join(export_dir, 'hls_h.jpg'), hls_h)
+        cv2.imwrite(os.path.join(export_dir, 'hls_l.jpg'), hls_l)
+        cv2.imwrite(os.path.join(export_dir, 'hls_s.jpg'), hls_s)
+
+        cv2.imwrite(os.path.join(export_dir, 'ycrcb_y.jpg'), ycrcb_y)
+        cv2.imwrite(os.path.join(export_dir, 'ycrcb_cr.jpg'), ycrcb_cr)
+        cv2.imwrite(os.path.join(export_dir, 'ycrcb_cb.jpg'), ycrcb_cb)
+
+        cv2.imwrite(os.path.join(export_dir, 'lab_l.jpg'), lab_l)
+        cv2.imwrite(os.path.join(export_dir, 'lab_a.jpg'), lab_a)
+        cv2.imwrite(os.path.join(export_dir, 'lab_b.jpg'), lab_b)
 
     plt.show()
 
 
 # Analyze image with color split
-def analyze_image_color_split(image_path):
+def analyze_image_color_split(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1258,48 +1365,82 @@ def analyze_image_color_split(image_path):
 
     (b, g, r) = cv2.split(image)
 
-    show_with_matplotlib(cv2.cvtColor(b, cv2.COLOR_GRAY2BGR), "BGR - (B)", 2)
-    show_with_matplotlib(cv2.cvtColor(g, cv2.COLOR_GRAY2BGR), "BGR - (G)", 2 + 6)
-    show_with_matplotlib(cv2.cvtColor(r, cv2.COLOR_GRAY2BGR), "BGR - (R)", 2 + 6 * 2)
+    bgr_b = cv2.cvtColor(b, cv2.COLOR_GRAY2BGR)
+    bgr_g = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
+    bgr_r = cv2.cvtColor(r, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(bgr_b, "BGR - (B)", 2)
+    show_with_matplotlib(bgr_g, "BGR - (G)", 2 + 6)
+    show_with_matplotlib(bgr_r, "BGR - (R)", 2 + 6 * 2)
 
     image_copy = cv2.merge((b, g, r))
 
     show_with_matplotlib(image_copy, "BGR - image (copy)", 1 + 6)
 
-    image_without_blue = image.copy()
-    image_without_blue[:, :, 0] = 0
-    image_without_green = image.copy()
-    image_without_green[:, :, 1] = 0
-    image_without_red = image.copy()
-    image_without_red[:, :, 2] = 0
+    bgr_without_b = image.copy()
+    bgr_without_b[:, :, 0] = 0
+    bgr_without_g = image.copy()
+    bgr_without_g[:, :, 1] = 0
+    bgr_without_r = image.copy()
+    bgr_without_r[:, :, 2] = 0
 
-    show_with_matplotlib(image_without_blue, "BGR without B", 3)
-    show_with_matplotlib(image_without_green, "BGR without G", 3 + 6)
-    show_with_matplotlib(image_without_red, "BGR without R", 3 + 6 * 2)
+    show_with_matplotlib(bgr_without_b, "BGR without B", 3)
+    show_with_matplotlib(bgr_without_g, "BGR without G", 3 + 6)
+    show_with_matplotlib(bgr_without_r, "BGR without R", 3 + 6 * 2)
 
-    (b, g, r) = cv2.split(image_without_blue)
+    (b, g, r) = cv2.split(bgr_without_b)
+    bgr_without_b_b = cv2.cvtColor(b, cv2.COLOR_GRAY2BGR)
+    bgr_without_b_g = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
+    bgr_without_b_r = cv2.cvtColor(r, cv2.COLOR_GRAY2BGR)
+    show_with_matplotlib(bgr_without_b_b, "BGR without B (B)", 4)
+    show_with_matplotlib(bgr_without_b_g, "BGR without B (G)", 4 + 6)
+    show_with_matplotlib(bgr_without_b_r, "BGR without B (R)", 4 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(b, cv2.COLOR_GRAY2BGR), "BGR without B (B)", 4)
-    show_with_matplotlib(cv2.cvtColor(g, cv2.COLOR_GRAY2BGR), "BGR without B (G)", 4 + 6)
-    show_with_matplotlib(cv2.cvtColor(r, cv2.COLOR_GRAY2BGR), "BGR without B (R)", 4 + 6 * 2)
+    (b, g, r) = cv2.split(bgr_without_g)
+    bgr_without_g_b = cv2.cvtColor(b, cv2.COLOR_GRAY2BGR)
+    bgr_without_g_g = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
+    bgr_without_g_r = cv2.cvtColor(r, cv2.COLOR_GRAY2BGR)
 
-    (b, g, r) = cv2.split(image_without_green)
+    show_with_matplotlib(bgr_without_g_b, "BGR without G (B)", 5)
+    show_with_matplotlib(bgr_without_g_g, "BGR without G (G)", 5 + 6)
+    show_with_matplotlib(bgr_without_g_r, "BGR without G (R)", 5 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(b, cv2.COLOR_GRAY2BGR), "BGR without G (B)", 5)
-    show_with_matplotlib(cv2.cvtColor(g, cv2.COLOR_GRAY2BGR), "BGR without G (G)", 5 + 6)
-    show_with_matplotlib(cv2.cvtColor(r, cv2.COLOR_GRAY2BGR), "BGR without G (R)", 5 + 6 * 2)
+    (b, g, r) = cv2.split(bgr_without_r)
+    bgr_without_r_b = cv2.cvtColor(b, cv2.COLOR_GRAY2BGR)
+    bgr_without_r_g = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
+    bgr_without_r_r = cv2.cvtColor(r, cv2.COLOR_GRAY2BGR)
 
-    (b, g, r) = cv2.split(image_without_red)
+    show_with_matplotlib(bgr_without_r_b, "BGR without R (B)", 6)
+    show_with_matplotlib(bgr_without_r_g, "BGR without R (G)", 6 + 6)
+    show_with_matplotlib(bgr_without_r_r, "BGR without R (R)", 6 + 6 * 2)
 
-    show_with_matplotlib(cv2.cvtColor(b, cv2.COLOR_GRAY2BGR), "BGR without R (B)", 6)
-    show_with_matplotlib(cv2.cvtColor(g, cv2.COLOR_GRAY2BGR), "BGR without R (G)", 6 + 6)
-    show_with_matplotlib(cv2.cvtColor(r, cv2.COLOR_GRAY2BGR), "BGR without R (R)", 6 + 6 * 2)
+    # Export if applicable
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_b.jpg'), bgr_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_g.jpg'), bgr_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_r.jpg'), bgr_r)
+
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_b.jpg'), bgr_without_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_g.jpg'), bgr_without_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_r.jpg'), bgr_without_r)
+
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_b_b.jpg'), bgr_without_b_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_b_g.jpg'), bgr_without_b_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_b_r.jpg'), bgr_without_b_r)
+
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_g_b.jpg'), bgr_without_g_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_g_g.jpg'), bgr_without_g_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_g_r.jpg'), bgr_without_g_r)
+
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_r_b.jpg'), bgr_without_r_b)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_r_g.jpg'), bgr_without_r_g)
+        cv2.imwrite(os.path.join(export_dir, 'bgr_without_r_r.jpg'), bgr_without_r_r)
 
     plt.show()
 
 
 # Analyze image with multiple sharpen tech
-def analyze_image_sharpen(image_path):
+def analyze_image_sharpen(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1356,11 +1497,20 @@ def analyze_image_sharpen(image_path):
     show_with_matplotlib(sharp_image_4, "sharp 4", 5)
     show_with_matplotlib(sharp_image_5, "sharp 5", 6)
 
+    # Export if applicable
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+        cv2.imwrite(os.path.join(export_dir, 'sharp_1.jpg'), sharp_image_1)
+        cv2.imwrite(os.path.join(export_dir, 'sharp_2.jpg'), sharp_image_2)
+        cv2.imwrite(os.path.join(export_dir, 'sharp_3.jpg'), sharp_image_3)
+        cv2.imwrite(os.path.join(export_dir, 'sharp_4.jpg'), sharp_image_4)
+        cv2.imwrite(os.path.join(export_dir, 'sharp_5.jpg'), sharp_image_5)
+
     plt.show()
 
 
 # Analyze image with multiple smooth tech
-def analyze_image_smooth(image_path):
+def analyze_image_smooth(image_path, export_dir=None):
     def show_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -1408,5 +1558,17 @@ def analyze_image_smooth(image_path):
     show_with_matplotlib(smooth_image_mb, "cv2.medianBlur()", 7)
     show_with_matplotlib(smooth_image_bf, "cv2.bilateralFilter() - small values", 8)
     show_with_matplotlib(smooth_image_bf_2, "cv2.bilateralFilter() - big values", 9)
+
+    # Export if applicable
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_f2D_5x5.jpg'), smooth_image_f2D_5_5)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_f2D_10x10.jpg'), smooth_image_f2D_10_10)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_blur.jpg'), smooth_image_b)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_box_filter.jpg'), smooth_image_bfi)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_gaussian_blur.jpg'), smooth_image_gb)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_median_blur.jpg'), smooth_image_mb)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_bilateral_filter_small.jpg'), smooth_image_bf)
+        cv2.imwrite(os.path.join(export_dir, 'smooth_image_bilateral_filter_big.jpg'), smooth_image_bf_2)
 
     plt.show()
