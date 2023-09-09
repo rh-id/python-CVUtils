@@ -9,7 +9,7 @@ if __name__ == '__main__':
                                                  'smooth', 'color_map', 'color_space',
                                                  'color_split'],
                         help="Type of image analysis that you want to perform")
-    parser.add_argument("--export-dir", help="Path to export the analyze images")
+    parser.add_argument("--export-dir", help="Path to export the images")
     args = parser.parse_args()
     if args.analyze_type == 'kernel':
         image_utils.analyze_image_kernel(args.image_path, export_dir=args.export_dir)

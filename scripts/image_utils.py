@@ -78,7 +78,7 @@ def feature_matching_bf(image_path_query, image_path_scene):
     plt.show()
 
 
-def contours_hu_moments(image_path):
+def contours_hu_moments(image_path, export_dir=None):
     def centroid(moments):
         x_centroid = round(moments['m10'] / moments['m00'])
         y_centroid = round(moments['m01'] / moments['m00'])
@@ -135,8 +135,13 @@ def contours_hu_moments(image_path):
     # Show the Figure:
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def contours_approximation(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'image.jpg'), image)
+
+
+def contours_approximation(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -173,14 +178,24 @@ def contours_approximation(image_path):
     cv2.drawContours(image=image_approx_tc89_kcos, contours=contours4, contourIdx=-1,
                      color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
 
+    thresh_img = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
     show_img_with_matplotlib(image, "image", 1)
-    show_img_with_matplotlib(cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR), "threshold = 100", 2)
+    show_img_with_matplotlib(thresh_img, "threshold = 100", 2)
     show_img_with_matplotlib(image_approx_none, "contours (APPROX_NONE)", 3)
     show_img_with_matplotlib(image_approx_simple, "contours (CHAIN_APPROX_SIMPLE)", 4)
     show_img_with_matplotlib(image_approx_tc89_l1, "contours (APPROX_TC89_L1)", 5)
     show_img_with_matplotlib(image_approx_tc89_kcos, "contours (APPROX_TC89_KCOS)", 6)
 
     plt.show()
+
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+
+        cv2.imwrite(os.path.join(export_dir, 'threshold_100.jpg'), thresh_img)
+        cv2.imwrite(os.path.join(export_dir, 'approx_none.jpg'), image_approx_none)
+        cv2.imwrite(os.path.join(export_dir, 'chain_approx_simple.jpg'), image_approx_simple)
+        cv2.imwrite(os.path.join(export_dir, 'approx_tc89_l1.jpg'), image_approx_tc89_l1)
+        cv2.imwrite(os.path.join(export_dir, 'approx_tc89_kcos.jpg'), image_approx_tc89_kcos)
 
 
 def threshold_image_scikit_image(image_path):
