@@ -522,7 +522,7 @@ def threshold_image_binary(image_path):
     plt.show()
 
 
-def histogram_image_color_equalize_hsv(image_path):
+def histogram_image_color_equalize_hsv(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -594,8 +594,17 @@ def histogram_image_color_equalize_hsv(image_path):
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def histogram_image_color_equalize(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'image_lighter.jpg'), added_image)
+        cv2.imwrite(os.path.join(export_dir, 'image_darker.jpg'), subtracted_image)
+        cv2.imwrite(os.path.join(export_dir, 'image_equalized.jpg'), image_eq)
+        cv2.imwrite(os.path.join(export_dir, 'image_lighter_equalized.jpg'), added_image_eq)
+        cv2.imwrite(os.path.join(export_dir, 'image_darker_equalized.jpg'), subtracted_image_eq)
+
+
+def histogram_image_color_equalize(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -670,8 +679,17 @@ def histogram_image_color_equalize(image_path):
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def histogram_image_color(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'image_lighter.jpg'), added_image)
+        cv2.imwrite(os.path.join(export_dir, 'image_darker.jpg'), subtracted_image)
+        cv2.imwrite(os.path.join(export_dir, 'image_equalize.jpg'), image_eq)
+        cv2.imwrite(os.path.join(export_dir, 'image_lighter_equalize.jpg'), added_image_eq)
+        cv2.imwrite(os.path.join(export_dir, 'image_darker_equalize.jpg'), subtracted_image_eq)
+
+
+def histogram_image_color(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -721,6 +739,12 @@ def histogram_image_color(image_path):
     show_hist_with_matplotlib_rgb(hist_color_subtracted_image, 6, ['b', 'g', 'r'])
 
     plt.show()
+
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+
+        cv2.imwrite(os.path.join(export_dir, 'image_lighter.jpg'), added_image)
+        cv2.imwrite(os.path.join(export_dir, 'image_darker.jpg'), subtracted_image)
 
 
 def histogram_image_gray_mask(image_path):
