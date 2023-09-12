@@ -198,7 +198,7 @@ def contours_approximation(image_path, export_dir=None):
         cv2.imwrite(os.path.join(export_dir, 'approx_tc89_kcos.jpg'), image_approx_tc89_kcos)
 
 
-def threshold_image_scikit_image(image_path):
+def threshold_image_scikit_image(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos, cmap=None, to_rgb=True):
         if to_rgb:
             img_RGB = color_img[:, :, ::-1]
@@ -240,23 +240,39 @@ def threshold_image_scikit_image(image_path):
     binary_yen = gray_image > thresh_yen
     binary_yen = img_as_ubyte(binary_yen)
 
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    binary_otsu = cv2.cvtColor(binary_otsu, cv2.COLOR_GRAY2BGR)
+    binary_triangle = cv2.cvtColor(binary_triangle, cv2.COLOR_GRAY2BGR)
+    binary_niblack = cv2.cvtColor(binary_niblack, cv2.COLOR_GRAY2BGR)
+    binary_sauvola = cv2.cvtColor(binary_sauvola, cv2.COLOR_GRAY2BGR)
+    binary_yen = cv2.cvtColor(binary_yen, cv2.COLOR_GRAY2BGR)
     show_img_with_matplotlib(image, "image", 1)
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_img_with_matplotlib(gray_image, "gray img", 2)
     show_img_with_matplotlib(multi_otsu, "Multiotsu", 3, cmap='jet', to_rgb=False)
-    show_img_with_matplotlib(cv2.cvtColor(binary_otsu, cv2.COLOR_GRAY2BGR), "Otsu", 4)
-    show_img_with_matplotlib(cv2.cvtColor(binary_triangle, cv2.COLOR_GRAY2BGR), "Triangle",
+    show_img_with_matplotlib(binary_otsu, "Otsu", 4)
+    show_img_with_matplotlib(binary_triangle, "Triangle",
                              5)
-    show_img_with_matplotlib(cv2.cvtColor(binary_niblack, cv2.COLOR_GRAY2BGR), "Niblack",
+    show_img_with_matplotlib(binary_niblack, "Niblack",
                              6)
-    show_img_with_matplotlib(cv2.cvtColor(binary_sauvola, cv2.COLOR_GRAY2BGR), "Sauvola",
+    show_img_with_matplotlib(binary_sauvola, "Sauvola",
                              7)
-    show_img_with_matplotlib(cv2.cvtColor(binary_yen, cv2.COLOR_GRAY2BGR), "Yen",
+    show_img_with_matplotlib(binary_yen, "Yen",
                              8)
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_triangle_filter_noise(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_image.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'otsu.jpg'), binary_otsu)
+        cv2.imwrite(os.path.join(export_dir, 'triangle.jpg'), binary_triangle)
+        cv2.imwrite(os.path.join(export_dir, 'niblack.jpg'), binary_niblack)
+        cv2.imwrite(os.path.join(export_dir, 'sauvola.jpg'), binary_sauvola)
+        cv2.imwrite(os.path.join(export_dir, 'yen.jpg'), binary_yen)
+
+
+def threshold_image_triangle_filter_noise(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -288,19 +304,29 @@ def threshold_image_triangle_filter_noise(image_path):
     hist2 = cv2.calcHist([gray_image_blurred], [0], None, [256], [0, 256])
     ret2, th2 = cv2.threshold(gray_image_blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_TRIANGLE)
 
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    th1 = cv2.cvtColor(th1, cv2.COLOR_GRAY2BGR)
+    th2 = cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR)
     show_img_with_matplotlib(image, "image", 1)
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_img_with_matplotlib(gray_image, "gray img", 2)
     show_hist_with_matplotlib_gray(hist, "gray img", 3, 'm', ret1)
-    show_img_with_matplotlib(cv2.cvtColor(th1, cv2.COLOR_GRAY2BGR),
+    show_img_with_matplotlib(th1,
                              "Triangle binarization (before Gaussian filter)", 4)
     show_hist_with_matplotlib_gray(hist2, "gray img (after Gaussian filter)", 5, 'm', ret2)
-    show_img_with_matplotlib(cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR),
+    show_img_with_matplotlib(th2,
                              "Triangle binarization (after Gaussian filter)", 6)
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_otsu_filter_noise(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_image.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'triangle_before_gaussian.jpg'), th1)
+        cv2.imwrite(os.path.join(export_dir, 'triangle_after_gaussian.jpg'), th2)
+
+
+def threshold_image_otsu_filter_noise(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -335,19 +361,29 @@ def threshold_image_otsu_filter_noise(image_path):
 
     ret2, th2 = cv2.threshold(gray_image_blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    th1 = cv2.cvtColor(th1, cv2.COLOR_GRAY2BGR)
+    th2 = cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR)
     show_img_with_matplotlib(image, "image with noise", 1)
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_img_with_matplotlib(gray_image, "gray img", 2)
     show_hist_with_matplotlib_gray(hist, "gray img", 3, 'm', ret1)
-    show_img_with_matplotlib(cv2.cvtColor(th1, cv2.COLOR_GRAY2BGR),
+    show_img_with_matplotlib(th1,
                              "Otsu's binarization (before Gaussian filter)", 4)
     show_hist_with_matplotlib_gray(hist2, "gray img (Gaussian filter)", 5, 'm', ret2)
-    show_img_with_matplotlib(cv2.cvtColor(th2, cv2.COLOR_GRAY2BGR),
+    show_img_with_matplotlib(th2,
                              "Otsu's binarization (after Gaussian filter)", 6)
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_otsu(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_image.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'otsu_before_gaussian.jpg'), th1)
+        cv2.imwrite(os.path.join(export_dir, 'otsu_after_gaussian.jpg'), th2)
+
+
+def threshold_image_otsu(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -380,16 +416,23 @@ def threshold_image_otsu(image_path):
 
     hist_th1 = cv2.calcHist([th1_bgr], [0], None, [256], [0, 256])
 
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
     show_img_with_matplotlib(image, "image", 1)
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 2)
+    show_img_with_matplotlib(gray_image, "gray img", 2)
     show_hist_with_matplotlib_gray(hist, "gray img", 3, 'm', ret1)
     show_img_with_matplotlib(th1_bgr, "Otsu's binarization", 4)
     show_hist_with_matplotlib_gray(hist_th1, "Otsu's binarization", 5, 'm')
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_bgr(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_image.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'otsu.jpg'), th1_bgr)
+
+
+def threshold_image_bgr(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -419,8 +462,14 @@ def threshold_image_bgr(image_path):
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_adaptive_filter_noise(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'threshold_120_BGR.jpg'), thresh1)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_120_each_channel_and_merge.jpg'), bgr_thresh)
+
+
+def threshold_image_adaptive_filter_noise(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -444,16 +493,30 @@ def threshold_image_adaptive_filter_noise(image_path):
     thresh3 = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     thresh4 = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 3)
 
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 1)
-    show_img_with_matplotlib(cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR), "THRESH_MEAN_C, blockSize=11, C=2", 2)
-    show_img_with_matplotlib(cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR), "THRESH_MEAN_C, blockSize=31, C=3", 3)
-    show_img_with_matplotlib(cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR), "GAUSSIAN_C, blockSize=11, C=2", 5)
-    show_img_with_matplotlib(cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR), "GAUSSIAN_C, blockSize=31, C=3", 6)
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    thresh1 = cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR)
+    thresh2 = cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR)
+    thresh3 = cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR)
+    thresh4 = cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR)
+    show_img_with_matplotlib(gray_image, "gray img", 1)
+    show_img_with_matplotlib(thresh1, "THRESH_MEAN_C, blockSize=11, C=2", 2)
+    show_img_with_matplotlib(thresh2, "THRESH_MEAN_C, blockSize=31, C=3", 3)
+    show_img_with_matplotlib(thresh3, "GAUSSIAN_C, blockSize=11, C=2", 5)
+    show_img_with_matplotlib(thresh4, "GAUSSIAN_C, blockSize=31, C=3", 6)
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_adaptive(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_img.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'thresh_mean_c_b11_c2.jpg'), thresh1)
+        cv2.imwrite(os.path.join(export_dir, 'thresh_mean_c_b31_c3.jpg'), thresh2)
+        cv2.imwrite(os.path.join(export_dir, 'gaussian_c_b11_c2.jpg'), thresh3)
+        cv2.imwrite(os.path.join(export_dir, 'gaussian_c_b31_c3.jpg'), thresh4)
+
+
+def threshold_image_adaptive(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -474,16 +537,30 @@ def threshold_image_adaptive(image_path):
     thresh3 = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     thresh4 = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 3)
 
-    show_img_with_matplotlib(cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR), "gray img", 1)
-    show_img_with_matplotlib(cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR), "THRESH_MEAN_C, blockSize=11, C=2", 2)
-    show_img_with_matplotlib(cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR), "THRESH_MEAN_C, blockSize=31, C=3", 3)
-    show_img_with_matplotlib(cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR), "GAUSSIAN_C, blockSize=11, C=2", 5)
-    show_img_with_matplotlib(cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR), "GAUSSIAN_C, blockSize=31, C=3", 6)
+    gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    thresh1 = cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR)
+    thresh2 = cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR)
+    thresh3 = cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR)
+    thresh4 = cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR)
+    show_img_with_matplotlib(gray_image, "gray img", 1)
+    show_img_with_matplotlib(thresh1, "THRESH_MEAN_C, blockSize=11, C=2", 2)
+    show_img_with_matplotlib(thresh2, "THRESH_MEAN_C, blockSize=31, C=3", 3)
+    show_img_with_matplotlib(thresh3, "GAUSSIAN_C, blockSize=11, C=2", 5)
+    show_img_with_matplotlib(thresh4, "GAUSSIAN_C, blockSize=31, C=3", 6)
 
     plt.show()
 
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
 
-def threshold_image_binary(image_path):
+        cv2.imwrite(os.path.join(export_dir, 'gray_img.jpg'), gray_image)
+        cv2.imwrite(os.path.join(export_dir, 'thresh_mean_c_b11_c2.jpg'), thresh1)
+        cv2.imwrite(os.path.join(export_dir, 'thresh_mean_c_b31_c3.jpg'), thresh2)
+        cv2.imwrite(os.path.join(export_dir, 'gaussian_c_b11_c2.jpg'), thresh3)
+        cv2.imwrite(os.path.join(export_dir, 'gaussian_c_b31_c3.jpg'), thresh4)
+
+
+def threshold_image_binary(image_path, export_dir=None):
     def show_img_with_matplotlib(color_img, title, pos):
         img_RGB = color_img[:, :, ::-1]
 
@@ -510,16 +587,36 @@ def threshold_image_binary(image_path):
     ret7, thresh7 = cv2.threshold(gray_image, 120, 255, cv2.THRESH_BINARY)
     ret8, thresh8 = cv2.threshold(gray_image, 130, 255, cv2.THRESH_BINARY)
 
-    show_img_with_matplotlib(cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR), "threshold = 60", 2)
-    show_img_with_matplotlib(cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR), "threshold = 70", 3)
-    show_img_with_matplotlib(cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR), "threshold = 80", 4)
-    show_img_with_matplotlib(cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR), "threshold = 90", 5)
-    show_img_with_matplotlib(cv2.cvtColor(thresh5, cv2.COLOR_GRAY2BGR), "threshold = 100", 6)
-    show_img_with_matplotlib(cv2.cvtColor(thresh6, cv2.COLOR_GRAY2BGR), "threshold = 110", 7)
-    show_img_with_matplotlib(cv2.cvtColor(thresh7, cv2.COLOR_GRAY2BGR), "threshold = 120", 8)
-    show_img_with_matplotlib(cv2.cvtColor(thresh8, cv2.COLOR_GRAY2BGR), "threshold = 130", 9)
+    thresh1 = cv2.cvtColor(thresh1, cv2.COLOR_GRAY2BGR)
+    thresh2 = cv2.cvtColor(thresh2, cv2.COLOR_GRAY2BGR)
+    thresh3 = cv2.cvtColor(thresh3, cv2.COLOR_GRAY2BGR)
+    thresh4 = cv2.cvtColor(thresh4, cv2.COLOR_GRAY2BGR)
+    thresh5 = cv2.cvtColor(thresh5, cv2.COLOR_GRAY2BGR)
+    thresh6 = cv2.cvtColor(thresh6, cv2.COLOR_GRAY2BGR)
+    thresh7 = cv2.cvtColor(thresh7, cv2.COLOR_GRAY2BGR)
+    thresh8 = cv2.cvtColor(thresh8, cv2.COLOR_GRAY2BGR)
+    show_img_with_matplotlib(thresh1, "threshold = 60", 2)
+    show_img_with_matplotlib(thresh2, "threshold = 70", 3)
+    show_img_with_matplotlib(thresh3, "threshold = 80", 4)
+    show_img_with_matplotlib(thresh4, "threshold = 90", 5)
+    show_img_with_matplotlib(thresh5, "threshold = 100", 6)
+    show_img_with_matplotlib(thresh6, "threshold = 110", 7)
+    show_img_with_matplotlib(thresh7, "threshold = 120", 8)
+    show_img_with_matplotlib(thresh8, "threshold = 130", 9)
 
     plt.show()
+
+    if export_dir is not None:
+        pathlib.Path(export_dir).mkdir(parents=True, exist_ok=True)
+
+        cv2.imwrite(os.path.join(export_dir, 'threshold_60.jpg'), thresh1)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_70.jpg'), thresh2)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_80.jpg'), thresh3)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_90.jpg'), thresh4)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_100.jpg'), thresh5)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_110.jpg'), thresh6)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_120.jpg'), thresh7)
+        cv2.imwrite(os.path.join(export_dir, 'threshold_130.jpg'), thresh8)
 
 
 def histogram_image_color_equalize_hsv(image_path, export_dir=None):
