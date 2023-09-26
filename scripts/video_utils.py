@@ -16,12 +16,15 @@ def video2image_youtube(output_path, video2image_attr: Video2ImageYoutubeAttr = 
 
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
 
+    options = {"STREAM_RESOLUTION": video2image_attr.stream_resolution}
     for link in video2image_attr.links:
         link_output = os.path.join(output_path, parse.quote_plus(link))
         pathlib.Path(link_output).mkdir(parents=True, exist_ok=True)
         i = 1
         print("Processing:{} ,Output:{}".format(link, link_output))
-        cam_gear = CamGear(source=link, stream_mode=True).start()
+        cam_gear = (CamGear(source=link, stream_mode=True,
+                            **options)
+                    .start())
         while True:
             file_path = pathlib.Path(link_output, str(i) + ".jpg")
 
