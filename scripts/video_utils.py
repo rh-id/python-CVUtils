@@ -1,9 +1,48 @@
+import os.path
 import pathlib
+from urllib import parse
 
 import cv2
 import progressbar
+from vidgear.gears import CamGear
 
-from scripts.model.video_utils import Video2ImageAttr
+from scripts.model.video_utils import Video2ImageAttr, Video2ImageYoutubeAttr
+
+
+def video2image_youtube(output_path, video2image_attr: Video2ImageYoutubeAttr = Video2ImageYoutubeAttr()):
+    video2image_attr.print_self()
+    filter_pre_resize = video2image_attr.filter_pre_resize
+    filter_post_resize = video2image_attr.filter_post_resize
+
+    pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
+
+    for link in video2image_attr.links:
+        link_output = os.path.join(output_path, parse.quote_plus(link))
+        pathlib.Path(link_output).mkdir(parents=True, exist_ok=True)
+        i = 1
+        print("Processing:{} ,Output:{}".format(link, link_output))
+        cam_gear = CamGear(source=link, stream_mode=True).start()
+        while True:
+            file_path = pathlib.Path(link_output, str(i) + ".jpg")
+
+            frame = cam_gear.read()
+            if frame is None:
+                break
+            image = frame
+            if filter_pre_resize is not None:
+                image = filter_pre_resize(file_path, image)
+            if video2image_attr.resize_width is not None and video2image_attr.resize_height is not None:
+                image = cv2.resize(frame, (video2image_attr.resize_width, video2image_attr.resize_height))
+            if filter_post_resize is not None:
+                image = filter_post_resize(file_path, image)
+
+            cv2.imwrite(str(file_path), image)
+            i += 1
+
+        # safely close video stream
+        cam_gear.stop()
+
+    print("Done processing {} links".format(len(video2image_attr.links)))
 
 
 # Split all video at video_path to images (jpeg) at output_path

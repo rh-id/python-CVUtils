@@ -36,6 +36,16 @@ Example run python with: `main_video2image.py assets/video/test.avi output/video
 
 See example on how to write [**filter function**](https://github.com/rh-id/python-CVUtils/blob/master/main_video2image/filter/colormap_autumn.py)
 
+### main_video2image_youtube.py
+Used to split video to images from youtube links.
+
+`links_path` point to text file that contains youtube link per line see [**example**](https://github.com/rh-id/python-CVUtils/blob/master/assets/text/youtube.txt) 
+
+Use `--filter-path` to point to your custom filter for each frame.
+Example run python with: `main_video2image.py assets/video/test.avi output/video2image --filter-path main_video2image/filter/colormap_autumn.py`
+
+See example on how to write [**filter function**](https://github.com/rh-id/python-CVUtils/blob/master/main_video2image/filter/colormap_autumn.py)
+
 ### main_video_info.py
 Used to show video attributes/information
 

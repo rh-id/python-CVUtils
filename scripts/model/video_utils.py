@@ -50,3 +50,60 @@ class Video2ImageAttr:
             print("no filter_post_resize function")
         else:
             print("filter_post_resize=" + str(self.filter_post_resize))
+
+
+class Video2ImageYoutubeAttr:
+    """values are either: 144p, 240p, 360p, 480p, 720p, 1080p, 1440p, 2160p, 4320p, worst, best"""
+    stream_resolution: str
+    """list of youtube links"""
+    links: any
+
+    resize_width: int
+    resize_height: int
+
+    filter_path: str
+    filter_module_name: str
+    filter_pre_resize: any
+    filter_post_resize: any
+
+    def __init__(self, args=None):
+        if args is None:
+            return
+        self.stream_resolution = args.stream_resolution
+        if args.links_path is not None:
+            if os.path.isfile(args.links_path):
+                with open(args.links_path, 'r') as f:
+                    self.links = f.readlines()
+
+        self.resize_width = args.resize_width
+        self.resize_height = args.resize_height
+        self.filter_path = args.filter_path
+        if self.filter_path is not None:
+            self.filter_module_name = os.path.basename(self.filter_path).rsplit('.')[0]
+            spec = util.spec_from_file_location(self.filter_module_name,
+                                                self.filter_path)
+            mod = util.module_from_spec(spec)
+            sys.modules[self.filter_module_name] = mod
+            spec.loader.exec_module(mod)
+            self.filter_pre_resize = getattr(mod, 'pre_resize')
+            self.filter_post_resize = getattr(mod, 'post_resize')
+        else:
+            self.filter_pre_resize = None
+            self.filter_post_resize = None
+
+    def print_self(self):
+        print("stream_resolution=" + str(self.stream_resolution))
+        print("links=" + str(self.links))
+
+        print("resize_width=" + str(self.resize_width))
+        print("resize_height=" + str(self.resize_height))
+        print("filter_path=" + str(self.filter_path))
+        print("filter_module_name=" + str(self.filter_path))
+        if self.filter_pre_resize is None:
+            print("no filter_pre_resize function")
+        else:
+            print("filter_pre_resize=" + str(self.filter_pre_resize))
+        if self.filter_post_resize is None:
+            print("no filter_post_resize function")
+        else:
+            print("filter_post_resize=" + str(self.filter_post_resize))
