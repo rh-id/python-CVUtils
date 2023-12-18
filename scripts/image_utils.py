@@ -42,9 +42,12 @@ def feature_matching_bf(image_path_query, image_path_scene):
     # Match descriptors:
     bf_matches = bf_matcher.match(descriptors_1, descriptors_2)
     print("bf_matches: '{}'".format(len(bf_matches)))
-    # Sort the matches in the order of their distance:
-    bf_matches = sorted(bf_matches, key=lambda x: x.distance)
-    best_matches = bf_matches[:40]
+    # why 64? see: https://stackoverflow.com/questions/22857398/matching-orb-features-with-a-threshold
+    best_matches = []
+    for dm in bf_matches:
+        if dm.distance < 64:
+            best_matches.append(dm)
+
     print("best_matches: '{}'".format(len(best_matches)))
 
     # Extract the matched keypoints:
