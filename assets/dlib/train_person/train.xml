@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<?xml-stylesheet type='text/xsl' href='image_metadata_stylesheet.xsl'?>
+<dataset>
+<name>imglab dataset</name>
+<comment>Created by imglab tool.</comment>
+<images>
+  <image file='1.jpg' width='640' height='360'>
+    <box top='160' left='141' width='39' height='103'>
+      <label>person</label>
+    </box>
+    <box top='167' left='171' width='86' height='157'>
+      <label>person</label>
+    </box>
+    <box top='158' left='283' width='55' height='201'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='2.jpg' width='640' height='360'>
+    <box top='146' left='260' width='36' height='98'>
+      <label>person</label>
+    </box>
+    <box top='145' left='307' width='46' height='97'>
+      <label>person</label>
+    </box>
+    <box top='142' left='515' width='43' height='102'>
+      <label>person</label>
+    </box>
+    <box top='153' left='392' width='15' height='49'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='3.jpg' width='640' height='360'>
+    <box top='128' left='299' width='70' height='188'>
+      <label>person</label>
+    </box>
+    <box top='131' left='386' width='87' height='190'>
+      <label>person</label>
+    </box>
+    <box top='147' left='475' width='34' height='71'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='4.jpg' width='640' height='360'>
+    <box top='146' left='157' width='46' height='110'>
+      <label>person</label>
+    </box>
+    <box top='119' left='367' width='54' height='152'>
+      <label>person</label>
+    </box>
+    <box top='158' left='417' width='37' height='109'>
+      <label>person</label>
+    </box>
+    <box top='129' left='455' width='50' height='143'>
+      <label>person</label>
+    </box>
+    <box top='130' left='495' width='44' height='135'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='5.jpg' width='640' height='360'>
+    <box top='141' left='158' width='41' height='113'>
+      <label>person</label>
+    </box>
+    <box top='154' left='217' width='23' height='57'>
+      <label>person</label>
+    </box>
+    <box top='133' left='268' width='71' height='212'>
+      <label>person</label>
+    </box>
+    <box top='124' left='325' width='71' height='211'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='6.jpg' width='640' height='360'>
+    <box top='126' left='212' width='62' height='222'>
+      <label>person</label>
+    </box>
+    <box top='105' left='354' width='99' height='245'>
+      <label>person</label>
+    </box>
+    <box top='140' left='309' width='44' height='113'>
+      <label>person</label>
+    </box>
+    <box top='145' left='270' width='39' height='116'>
+      <label>person</label>
+    </box>
+    <box top='143' left='475' width='55' height='124'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='7.jpg' width='640' height='360'>
+    <box top='140' left='373' width='62' height='146'>
+      <label>person</label>
+    </box>
+    <box top='138' left='263' width='48' height='147'>
+      <label>person</label>
+    </box>
+    <box top='123' left='300' width='58' height='157'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='8.jpg' width='640' height='360'>
+    <box top='146' left='316' width='31' height='88'>
+      <label>person</label>
+    </box>
+    <box top='145' left='227' width='39' height='102'>
+      <label>person</label>
+    </box>
+    <box top='138' left='178' width='48' height='118'>
+      <label>person</label>
+    </box>
+    <box top='124' left='358' width='75' height='196'>
+      <label>person</label>
+    </box>
+    <box top='109' left='445' width='79' height='233'>
+      <label>person</label>
+    </box>
+    <box top='125' left='520' width='55' height='175'>
+      <label>person</label>
+    </box>
+  </image>
+  <image file='9.jpg' width='640' height='360'>
+    <box top='147' left='205' width='39' height='121'>
+      <label>person</label>
+    </box>
+    <box top='144' left='238' width='36' height='115'>
+      <label>person</label>
+    </box>
+    <box top='125' left='102' width='62' height='180'>
+      <label>person</label>
+    </box>
+    <box top='136' left='388' width='41' height='130'>
+      <label>person</label>
+    </box>
+    <box top='134' left='427' width='40' height='130'>
+      <label>person</label>
+    </box>
+    <box top='138' left='466' width='45' height='122'>
+      <label>person</label>
+    </box>
+  </image>
+</images>
+</dataset>

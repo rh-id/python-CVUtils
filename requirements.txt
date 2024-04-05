@@ -7,3 +7,4 @@ matplotlib>=3.7.2
 scikit-image>=0.21.0
 vidgear>=0.3.2
 yt-dlp>=2023.9.24
+dlib>=19.24.4

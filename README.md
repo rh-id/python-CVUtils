@@ -4,6 +4,10 @@ Python video and image manipulation utilities mainly using opencv
 ## Main Scripts
 File with pattern `main_xxxx` were executable scripts for scripting usage
 
+### main_dlib_train_object_detector.py
+Used as sample to train object detector. 
+refer to https://github.com/davisking/dlib/blob/v19.24.4/python_examples/train_object_detector.py
+
 ### main_image_analysis.py
 Used to perform image analysis on the input image
 
@@ -54,3 +58,5 @@ Used to scan directory and export video attributes/information
 
 ## Attributions
 Special thanks to [Mastering OpenCV 4](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python) ([MIT License](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python/blob/master/LICENSE))
+
+Other images from https://www.youtube.com/@watchersclub
