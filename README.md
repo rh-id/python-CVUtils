@@ -60,3 +60,11 @@ Used to scan directory and export video attributes/information
 Special thanks to [Mastering OpenCV 4](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python) ([MIT License](https://github.com/PacktPublishing/Mastering-OpenCV-4-with-Python/blob/master/LICENSE))
 
 Other images from https://www.youtube.com/@watchersclub
+
+## Support this project
+Consider donation to support this project
+<table>
+  <tr>
+    <td><a href="https://trakteer.id/rh-id">https://trakteer.id/rh-id</a></td>
+  </tr>
+</table>
